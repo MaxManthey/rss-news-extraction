@@ -13,3 +13,4 @@ libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.12" % Test
 libraryDependencies += "org.scalamock" %% "scalamock" % "5.2.0" % Test
 libraryDependencies += "de.l3s.boilerpipe" % "boilerpipe" % "1.1.0"
+libraryDependencies += "mysql" % "mysql-connector-java" % "8.0.29"
