@@ -2,7 +2,6 @@ import com.typesafe.scalalogging.Logger
 import de.l3s.boilerpipe.extractors.CanolaExtractor
 import spray.json._
 import JsonNewsProtocol.jsonNewsFormat
-
 import java.io.File
 
 class ArticleExtraction {
@@ -36,7 +35,8 @@ class ArticleExtraction {
         else el
       })
       .map(el => if(el.nonEmpty && miscList.contains(el.head)) el.drop(1) else el)
-      .filter(el => el.nonEmpty && !stoppwortList.contains(el.toLowerCase))
+      .filter(el => el.length > 1 && !stoppwortList.contains(el.toLowerCase))
+      .map(el => el.toLowerCase())
 
 
   def wordsByAmount(article: Array[String]): Map[String, Int] = {
