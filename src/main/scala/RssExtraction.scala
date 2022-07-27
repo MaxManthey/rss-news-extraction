@@ -1,23 +1,27 @@
 import com.typesafe.scalalogging.Logger
 
-import java.time.LocalDateTime
-
 object RssExtraction {
 
   private val logger: Logger = Logger("RssExtraction Logger")
   private val articleExtraction = new ArticleExtraction
+  private val dbConnection = new DbConnection
 
   //TODO remove println
   def main(args: Array[String]): Unit = {
     //TODO drop old db
+    dbConnection.openDbConnection()
 
     val source = scala.io.Source.fromFile("FilterWords.txt")
     val lines = try source.mkString.split("\n").map(line => line.split(", ")) finally source.close()
     val (stoppwortList, miscList) = (lines(0), lines(1).map(el => el.charAt(0)))
 
     for(fileName <- articleExtraction.getAllFileNamesFromDir) {
+      var newsObj: News = null
+
       val article = articleExtraction.getNewsObject(fileName) match {
-        case Some(value) => Some(articleExtraction.stripHtml(value.article, stoppwortList, miscList))
+        case Some(value) =>
+          newsObj = value
+          Some(articleExtraction.stripHtml(value.article, stoppwortList, miscList))
         case None => None
       }
 
@@ -25,12 +29,19 @@ object RssExtraction {
         case Some(value) => Some(articleExtraction.wordsByAmount(value))
         case None => None
       }
-      //TODO Date from string to LocalDateTime
-      //TODO persist words with amount, source and date to DB in lowercase
-      //TODO add log for success
+
+      wordsMap match {
+        case Some(value) =>
+          logger.info("Successfully added article " + newsObj.source + " to DB")
+          addWordsToDb(newsObj.source, newsObj.dateTime, value)
+        case None => logger.error("Failed to add article " + newsObj.source + " to DB")
+      }
     }
 
-    //test local connection
-    DbConnection("moin", 1, "abc", LocalDateTime.now()).addWordToDb()
+    dbConnection.closeDbConnection()
   }
+
+
+  def addWordsToDb(source: String, dateTime: String, wordsMap: Map[String, Int]): Unit =
+    wordsMap.keys.foreach{ key => dbConnection.addWordToDb(key, wordsMap(key), source, dateTime) }
 }
