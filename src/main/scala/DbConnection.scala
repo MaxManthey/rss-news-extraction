@@ -31,6 +31,35 @@ class DbConnection {
   }
 
 
+  def dropWordOccurrenceTable(): Unit = {
+    try {
+      connection.createStatement().execute("drop table word_occurrence;")
+    } catch {
+      case e: Throwable => logger.error("Table word_occurrence could not be dropped." + e.getCause)
+    }
+  }
+
+
+  def createWordOccurrenceTable(): Unit = {
+    val createTableStatement = "CREATE TABLE word_occurrence(" +
+      "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+      "word VARCHAR(80) CHARACTER SET utf8mb4," +
+      "occurrence_amount SMALLINT," +
+      "source VARCHAR(1000)," +
+      "date_time DATETIME" +
+      ");"
+    try {
+      connection.createStatement().execute(createTableStatement)
+    } catch {
+      case e: Throwable => logger.error("Table word_occurrence could not be created." + e.getCause)
+    }
+  }
+
+
+  def addWordsMapToDb(source: String, dateTime: String, wordsMap: Map[String, Int]): Unit =
+    wordsMap.keys.foreach{ key => addWordToDb(key, wordsMap(key), source, dateTime) }
+
+
   def addWordToDb(word: String, occurrenceAmount: Int, source: String, dateTime: String): Unit = {
     try {
       prepared.setString(1, word)
