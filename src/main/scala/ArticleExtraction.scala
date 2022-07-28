@@ -4,6 +4,7 @@ import spray.json._
 import JsonNewsProtocol.jsonNewsFormat
 import java.io.File
 
+
 class ArticleExtraction {
 
   private val logger: Logger = Logger("RssExtraction Logger")
@@ -21,7 +22,7 @@ class ArticleExtraction {
       Some(sourceString.parseJson.convertTo[News])
     } catch {
       case e: Exception =>
-        logger.error("Extracting file: " + fileName + " has failed")
+        logger.error("Extracting file: " + fileName + " has failed" + e.getCause)
         None
     } finally source.close()
   }
@@ -39,11 +40,6 @@ class ArticleExtraction {
       .map(el => el.toLowerCase())
 
 
-  def wordsByAmount(article: Array[String]): Map[String, Int] = {
-    //TODO to oneliner
-    val wordsMap = article.groupBy(identity).transform((k, v) => v.size)
-    println(article.length + " " + article.mkString("(",", ",")"))
-    println(wordsMap.size + " " + wordsMap + "\n")
-    wordsMap
-  }
+  def wordsByAmount(article: Array[String]): Map[String, Int] =
+    article.groupBy(identity).transform((k, v) => v.size)
 }

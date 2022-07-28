@@ -6,10 +6,12 @@ object RssExtraction {
   private val articleExtraction = new ArticleExtraction
   private val dbConnection = new DbConnection
 
-  //TODO remove println
+
   def main(args: Array[String]): Unit = {
-    //TODO drop old db
     dbConnection.openDbConnection()
+
+    dbConnection.dropWordOccurrenceTable()
+    dbConnection.createWordOccurrenceTable()
 
     val source = scala.io.Source.fromFile("FilterWords.txt")
     val lines = try source.mkString.split("\n").map(line => line.split(", ")) finally source.close()
@@ -33,15 +35,11 @@ object RssExtraction {
       wordsMap match {
         case Some(value) =>
           logger.info("Successfully added article " + newsObj.source + " to DB")
-          addWordsToDb(newsObj.source, newsObj.dateTime, value)
+          dbConnection.addWordsMapToDb(newsObj.source, newsObj.dateTime, value)
         case None => logger.error("Failed to add article " + newsObj.source + " to DB")
       }
     }
 
     dbConnection.closeDbConnection()
   }
-
-
-  def addWordsToDb(source: String, dateTime: String, wordsMap: Map[String, Int]): Unit =
-    wordsMap.keys.foreach{ key => dbConnection.addWordToDb(key, wordsMap(key), source, dateTime) }
 }
