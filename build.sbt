@@ -7,10 +7,12 @@ lazy val root = (project in file("."))
     name := "rss-news-extraction"
   )
 
-libraryDependencies += "io.spray" %%  "spray-json" % "1.3.6"
-libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.11"
-libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.12" % Test
-libraryDependencies += "org.scalamock" %% "scalamock" % "5.2.0" % Test
-libraryDependencies += "de.l3s.boilerpipe" % "boilerpipe" % "1.1.0"
-libraryDependencies += "mysql" % "mysql-connector-java" % "8.0.29"
+libraryDependencies ++= Seq(
+  "io.spray" %%  "spray-json" % "1.3.6",
+  "ch.qos.logback" % "logback-classic" % "1.2.11",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
+  "org.scalatest" %% "scalatest" % "3.2.12" % Test,
+  "org.scalamock" %% "scalamock" % "5.2.0" % Test,
+  "de.l3s.boilerpipe" % "boilerpipe" % "1.1.0",
+  "com.h2database" % "h2" % "1.4.196"
+)
