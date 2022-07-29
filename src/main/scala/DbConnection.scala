@@ -13,11 +13,11 @@ class DbConnection {
   private val password = ""
 
 
-  def openDbConnection(): Unit = {
+  def open(): Unit = {
     try {
       Class.forName(driver)
       connection = DriverManager.getConnection(url, username, password)
-      val insert = s"INSERT INTO word_occurrence(word, occurrence_amount, source, date_time) VALUES(?, ?, ?, ?);"
+      val insert = s"INSERT INTO word_frequency(word, frequency, source, date_time) VALUES(?, ?, ?, ?);"
       prepared = connection.prepareStatement(insert);
     } catch {
       case e: Throwable => logger.error("Db connection failed: " + e.getCause)
@@ -25,7 +25,7 @@ class DbConnection {
   }
 
 
-  def closeDbConnection(): Unit = {
+  def close(): Unit = {
     prepared.close()
     connection.close()
   }
@@ -33,7 +33,7 @@ class DbConnection {
 
   def dropWordOccurrenceTable(): Unit = {
     try {
-      connection.createStatement().execute("drop table word_occurrence;")
+      connection.createStatement().execute("drop table word_frequency;")
     } catch {
       case e: Throwable => logger.error("Table word_occurrence could not be dropped." + e.getCause)
     }
@@ -41,10 +41,10 @@ class DbConnection {
 
 
   def createWordOccurrenceTable(): Unit = {
-    val createTableStatement = "CREATE TABLE word_occurrence(" +
+    val createTableStatement = "CREATE TABLE word_frequency(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
       "word VARCHAR(80) CHARACTER SET utf8mb4," +
-      "occurrence_amount SMALLINT," +
+      "frequency SMALLINT," +
       "source VARCHAR(1000)," +
       "date_time DATETIME" +
       ");"
@@ -60,10 +60,10 @@ class DbConnection {
     wordsMap.keys.foreach{ key => addWordToDb(key, wordsMap(key), source, dateTime) }
 
 
-  def addWordToDb(word: String, occurrenceAmount: Int, source: String, dateTime: String): Unit = {
+  def addWordToDb(word: String, frequency: Int, source: String, dateTime: String): Unit = {
     try {
       prepared.setString(1, word)
-      prepared.setInt(2, occurrenceAmount)
+      prepared.setInt(2, frequency)
       prepared.setString(3, source)
       prepared.setString(4, dateTime)
       prepared.execute()

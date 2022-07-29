@@ -8,12 +8,12 @@ object RssExtraction {
 
 
   def main(args: Array[String]): Unit = {
-    dbConnection.openDbConnection()
+    dbConnection.open()
 
     dbConnection.dropWordOccurrenceTable()
     dbConnection.createWordOccurrenceTable()
 
-    val source = scala.io.Source.fromFile("FilterWords.txt")
+    val source = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
     val lines = try source.mkString.split("\n").map(line => line.split(", ")) finally source.close()
     val (stoppwortList, miscList) = (lines(0), lines(1).map(el => el.charAt(0)))
 
@@ -28,7 +28,7 @@ object RssExtraction {
       }
 
       val wordsMap = article match {
-        case Some(value) => Some(articleExtraction.wordsByAmount(value))
+        case Some(value) => Some(articleExtraction.wordsByFrequency(value))
         case None => None
       }
 
@@ -40,6 +40,6 @@ object RssExtraction {
       }
     }
 
-    dbConnection.closeDbConnection()
+    dbConnection.close()
   }
 }
