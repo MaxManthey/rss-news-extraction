@@ -40,6 +40,6 @@ class ArticleExtraction {
       .map(el => el.toLowerCase())
 
 
-  def wordsByAmount(article: Array[String]): Map[String, Int] =
+  def wordsByFrequency(article: Array[String]): Map[String, Int] =
     article.groupBy(identity).transform((k, v) => v.size)
 }
