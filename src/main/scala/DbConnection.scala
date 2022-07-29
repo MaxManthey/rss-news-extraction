@@ -7,9 +7,9 @@ class DbConnection {
   private val logger: Logger = Logger("DbConnection Logger")
   private var prepared: PreparedStatement = _
   private var connection: Connection = _
-  private val driver = "com.mysql.cj.jdbc.Driver"
-  private val url = "jdbc:mysql://localhost/rss_news_words"
-  private val username = "root"
+  private val driver = "org.h2.Driver"
+  private val url = "jdbc:h2:./db/rss_news_words"
+  private val username = "sa"
   private val password = ""
 
 
@@ -43,7 +43,7 @@ class DbConnection {
   def createWordOccurrenceTable(): Unit = {
     val createTableStatement = "CREATE TABLE word_frequency(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-      "word VARCHAR(80) CHARACTER SET utf8mb4," +
+      "word VARCHAR(80)," +
       "frequency SMALLINT," +
       "source VARCHAR(1000)," +
       "date_time DATETIME" +
