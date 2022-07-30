@@ -8,10 +8,7 @@ object RssExtraction {
 
 
   def main(args: Array[String]): Unit = {
-    dbConnection.open()
-
-    dbConnection.dropWordOccurrenceTable()
-    dbConnection.createWordOccurrenceTable()
+    if(!dbConnection.open()) System.exit(1)
 
     val source = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
     val lines = try source.mkString.split("\n").map(line => line.split(", ")) finally source.close()
