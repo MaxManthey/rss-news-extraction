@@ -12,15 +12,26 @@ class DbConnection {
   private val username = "sa"
   private val password = ""
 
+  /*
+  TODO normalize db
+    - table words / frequency / foreign key source / foreign key date
+    - table source / foreign key date
+    - table date (without time)
+   */
 
-  def open(): Unit = {
+  def open(): Boolean = {
     try {
       Class.forName(driver)
       connection = DriverManager.getConnection(url, username, password)
+      dropWordFrequencyTable()
+      createWordFrequencyTable()
       val insert = s"INSERT INTO word_frequency(word, frequency, source, date_time) VALUES(?, ?, ?, ?);"
       prepared = connection.prepareStatement(insert);
+      true
     } catch {
-      case e: Throwable => logger.error("Db connection failed: " + e.getCause)
+      case e: Throwable =>
+        logger.error("Db connection failed: " + e.getCause)
+        false
     }
   }
 
@@ -31,17 +42,17 @@ class DbConnection {
   }
 
 
-  def dropWordOccurrenceTable(): Unit = {
+  private def dropWordFrequencyTable(): Unit = {
     try {
-      connection.createStatement().execute("drop table word_frequency;")
+      connection.createStatement().execute("DROP TABLE IF EXISTS word_frequency;")
     } catch {
       case e: Throwable => logger.error("Table word_occurrence could not be dropped." + e.getCause)
     }
   }
 
 
-  def createWordOccurrenceTable(): Unit = {
-    val createTableStatement = "CREATE TABLE word_frequency(" +
+  private def createWordFrequencyTable(): Unit = {
+    val createTableStatement = "CREATE TABLE IF NOT EXISTS word_frequency(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
       "word VARCHAR(80)," +
       "frequency SMALLINT," +
