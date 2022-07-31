@@ -1,4 +1,6 @@
 import com.typesafe.scalalogging.Logger
+import java.time.LocalDateTime
+
 
 object RssExtraction {
 
@@ -24,6 +26,9 @@ object RssExtraction {
         case None => None
       }
 
+      val dateId = dbConnection.getFileDateId(LocalDateTime.parse(newsObj.dateTime).toLocalDate)
+      val sourceId = dbConnection.getFileSourceId(newsObj.source, dateId)
+
       val wordsMap = article match {
         case Some(value) => Some(articleExtraction.wordsByFrequency(value))
         case None => None
@@ -32,7 +37,7 @@ object RssExtraction {
       wordsMap match {
         case Some(value) =>
           logger.info("Successfully added article " + newsObj.source + " to DB")
-          dbConnection.addWordsMapToDb(newsObj.source, newsObj.dateTime, value)
+          dbConnection.addWordsMapToWordFrequencyTable(sourceId, dateId, value)
         case None => logger.error("Failed to add article " + newsObj.source + " to DB")
       }
     }

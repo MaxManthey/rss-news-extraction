@@ -30,5 +30,5 @@ target/
 #logs
 output.log
 
-#h2 changes
-/db
+#h2 logs
+db/rss_news_words.trace.db
