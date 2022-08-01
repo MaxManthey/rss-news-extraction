@@ -1,3 +1,5 @@
+import DAOs.{NewsDateDAO, NewsSourceDAO, WordFrequencyDAO}
+import DbClasses.{NewsDate, NewsSource, WordFrequency}
 import com.typesafe.scalalogging.Logger
 import java.time.LocalDateTime
 
@@ -10,6 +12,23 @@ object RssExtraction {
 
 
   def main(args: Array[String]): Unit = {
+    val testDate = NewsDate(LocalDateTime.parse("2022-07-31T19:18:34.179159").toLocalDate)
+    val newsDao = new NewsDateDAO()
+    newsDao.add(testDate)
+    val res = newsDao.findId(testDate.date)
+    println("res: " + res)
+
+    val testSource = "www.test.de"
+    val sourceDao = new NewsSourceDAO()
+    sourceDao.add(NewsSource(testSource, 1))
+    val res2 = sourceDao.findId(testSource)
+    println("res2: " + res2)
+
+    val wfDao = new WordFrequencyDAO()
+    wfDao.add(WordFrequency("moin", 75, 44, 2))
+
+    System.exit(1)
+
     if(!dbConnection.open()) System.exit(1)
 
     val source = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
