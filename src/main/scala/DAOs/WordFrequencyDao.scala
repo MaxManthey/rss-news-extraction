@@ -5,16 +5,16 @@ import com.typesafe.scalalogging.Logger
 import java.sql.{Connection, PreparedStatement, SQLException}
 
 
-class WordFrequencyDAO {
+class WordFrequencyDao(val dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("NewsSourceDAO Logger")
   private var prepared: PreparedStatement = _
 
 
   @throws[SQLException]
-  private def getConnection: Connection = DbConnectionFactory.getInstance.getConnection
+  private def getConnection: Connection = dbConnectionFactory.getConnection
 
 
-  def add(wordFrequency: WordFrequency): Unit = {
+  def save(wordFrequency: WordFrequency): Unit = {
     try {
       val addNewsDateQuery = "INSERT INTO word_frequency(word, frequency, source_id, date_id) VALUES(?, ?, ?, ?);"
       prepared = getConnection.prepareStatement(addNewsDateQuery)

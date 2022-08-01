@@ -6,16 +6,16 @@ import java.sql.{Connection, Date, PreparedStatement, SQLException}
 import java.time.LocalDate
 
 
-class NewsDateDAO {
+class NewsDateDao(val dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("NewsDateDAO Logger")
   private var prepared: PreparedStatement = _
 
 
   @throws[SQLException]
-  private def getConnection: Connection = DbConnectionFactory.getInstance.getConnection
+  private def getConnection: Connection = dbConnectionFactory.getConnection
 
 
-  def add(newsDate: NewsDate): Unit = {
+  def save(newsDate: NewsDate): Unit = {
     try {
       val addNewsDateQuery = "INSERT INTO news_dates(date) VALUES(?);"
       prepared = getConnection.prepareStatement(addNewsDateQuery)

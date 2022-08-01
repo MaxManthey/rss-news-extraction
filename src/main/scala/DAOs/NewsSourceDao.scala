@@ -5,16 +5,16 @@ import com.typesafe.scalalogging.Logger
 import java.sql.{Connection, PreparedStatement, SQLException}
 
 
-class NewsSourceDAO {
+class NewsSourceDao(val dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("NewsSourceDAO Logger")
   private var prepared: PreparedStatement = _
 
 
   @throws[SQLException]
-  private def getConnection: Connection = DbConnectionFactory.getInstance.getConnection
+  private def getConnection: Connection = dbConnectionFactory.getConnection
 
 
-  def add(newsSource: NewsSource): Unit = {
+  def save(newsSource: NewsSource): Unit = {
     try {
       val addNewsDateQuery = "INSERT INTO news_sources(source, date_id) VALUES(?, ?);"
       prepared = getConnection.prepareStatement(addNewsDateQuery)
