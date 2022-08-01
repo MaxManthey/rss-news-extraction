@@ -1,7 +1,9 @@
+package Extraction
+
+import Extraction.JsonNewsProtocol.jsonNewsFormat
 import com.typesafe.scalalogging.Logger
 import de.l3s.boilerpipe.extractors.CanolaExtractor
 import spray.json._
-import JsonNewsProtocol.jsonNewsFormat
 import java.io.File
 
 

@@ -1,3 +1,5 @@
+package Extraction
+
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 case class News(article: String, source: String, dateTime: String)
