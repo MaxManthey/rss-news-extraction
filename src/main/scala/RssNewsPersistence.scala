@@ -22,8 +22,8 @@ object RssNewsPersistence {
     val sourceDao = new NewsSourceDao(connectionFactory)
     val wordFrequencyDao = new WordFrequencyDao(connectionFactory)
 
-    val source = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
-    val lines = try source.mkString.split("\n").map(line => line.split(", ")) finally source.close()
+    val filterWords = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
+    val lines = try filterWords.mkString.split("\n").map(line => line.split(", ")) finally filterWords.close()
     val (stoppwortList, miscList) = (lines(0), lines(1).map(el => el.charAt(0)))
 
     PersistenceHandler.getInstance().persistExistingFiles(stoppwortList, miscList, dateDao, sourceDao, wordFrequencyDao)
