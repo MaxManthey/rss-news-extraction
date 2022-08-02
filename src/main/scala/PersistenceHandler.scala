@@ -35,8 +35,7 @@ class PersistenceHandler private() {
 
       wordsMap match {
         case Some(value) =>
-          //TODO save all implementieren
-          value.keys.foreach{ key => wordFrequencyDao.save(WordFrequency(key, value(key), sourceId, dateId)) }
+          wordFrequencyDao.saveAll(value.toArray.map(wf => WordFrequency(wf._1, wf._2, sourceId, dateId)))
           logger.info("Successfully added article " + newsObj.source + " to DB")
         case None => logger.error("Failed to add article " + newsObj.source + " to DB")
       }

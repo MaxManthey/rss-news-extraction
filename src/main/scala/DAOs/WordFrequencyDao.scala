@@ -28,6 +28,9 @@ class WordFrequencyDao(val dbConnectionFactory: DbConnectionFactory) {
       case e: Exception => logger.error(s"Error trying to add word: ${wordFrequency.word} ${e.getCause}")
     }
   }
+
+  def saveAll(wordFrequencyArr: Array[WordFrequency]): Unit =
+    for(wordFrequency <- wordFrequencyArr) save(wordFrequency)
 }
 
 

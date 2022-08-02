@@ -6,7 +6,6 @@ import java.sql.{Connection, DriverManager, PreparedStatement, SQLException}
 
 
 class DbConnectionFactory private() {
-  //TODO rethink prepared
   private val logger: Logger = Logger("DbConnectionFactory Logger")
   private val driverClassName = "org.h2.Driver"
   private val connectionUrl = "jdbc:h2:./db/rss_news_words"
