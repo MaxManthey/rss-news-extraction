@@ -1,6 +1,8 @@
 import DAOs.{NewsDateDao, NewsSourceDao, WordFrequencyDao}
-import DbClasses.DbConnectionFactory
+import DbClasses.{Article, DbConnectionFactory}
+//import Extraction.ArticleExtractor
 import com.typesafe.scalalogging.Logger
+
 import java.sql.SQLException
 
 object RssNewsPersistence {
@@ -8,15 +10,11 @@ object RssNewsPersistence {
 
 
   def main(args: Array[String]): Unit = {
+//    ArticleExtractor("../unzipped/news-files/").foreach{ println }
+//
+//    System.exit(1)
+
     val connectionFactory = DbConnectionFactory.getInstance
-    try{
-      connectionFactory.open()
-    } catch {
-      case e: SQLException => logger.info("SQLException trying to connect to db: " + e.getCause)
-        System.exit(1)
-      case e: Exception => logger.info("Exception trying to connect to db: " + e.getCause)
-        System.exit(1)
-    }
 
     val dateDao = new NewsDateDao(connectionFactory)
     val sourceDao = new NewsSourceDao(connectionFactory)
@@ -29,6 +27,9 @@ object RssNewsPersistence {
     PersistenceHandler.getInstance().persistExistingFiles(stoppwortList, miscList, dateDao, sourceDao, wordFrequencyDao)
 
     try{
+      dateDao.closePrepared()
+      sourceDao.closePrepared()
+      wordFrequencyDao.closePrepared()
       connectionFactory.close()
     } catch {
       case e: SQLException => logger.info("SQLException trying to close db: " + e.getCause)
