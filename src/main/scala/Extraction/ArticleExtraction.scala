@@ -9,7 +9,7 @@ import java.io.File
 
 class ArticleExtraction {
 
-  private val logger: Logger = Logger("RssExtraction Logger")
+  private val logger: Logger = Logger("ArticleExtraction Logger")
   private val newsFilesFolderPath = "../news-files/"
 
 

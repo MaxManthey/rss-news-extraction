@@ -14,18 +14,9 @@ class DbConnectionFactory private() {
 
   private var connection: Connection = _
 
-
-  try Class.forName(driverClassName)
-  catch {
-    case e: ClassNotFoundException => logger.error("Db driver could not be found: " + e.getCause)
-  }
-
-  @throws[SQLException]
-  def open(): Unit = {
-    connection = DriverManager.getConnection(connectionUrl, username, password)
-    dropTables()
-    createTables()
-  }
+  connection = DriverManager.getConnection(connectionUrl, username, password)
+  dropTables()
+  createTables()
 
 
   def close(): Unit = connection.close()
@@ -54,9 +45,7 @@ class DbConnectionFactory private() {
       "word VARCHAR(80)," +
       "frequency SMALLINT," +
       "source_id INT," +
-      "date_id INT," +
-      "FOREIGN KEY(source_id) REFERENCES news_sources(id)," +
-      "FOREIGN KEY(date_id) REFERENCES news_dates(id));"
+      "FOREIGN KEY(source_id) REFERENCES news_sources(id));"
     connection.createStatement().execute(createNewsDatesTable + createNewsSourcesTable + createWordFrequencyTable)
   }
 

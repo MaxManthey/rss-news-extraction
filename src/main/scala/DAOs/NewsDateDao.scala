@@ -8,7 +8,13 @@ import java.time.LocalDate
 
 class NewsDateDao(val dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("NewsDateDAO Logger")
-  private var prepared: PreparedStatement = _
+  private val preparedSave = getConnection.prepareStatement(
+    "INSERT INTO news_dates(date) VALUES(?);"
+  )
+  private val preparedFindId = getConnection.prepareStatement(
+    "SELECT * FROM news_dates WHERE date = ?"
+  )
+
 
 
   @throws[SQLException]
@@ -17,10 +23,8 @@ class NewsDateDao(val dbConnectionFactory: DbConnectionFactory) {
 
   def save(newsDate: NewsDate): Unit = {
     try {
-      val addNewsDateQuery = "INSERT INTO news_dates(date) VALUES(?);"
-      prepared = getConnection.prepareStatement(addNewsDateQuery)
-      prepared.setDate(1, Date.valueOf(newsDate.date))
-      prepared.execute()
+      preparedSave.setDate(1, Date.valueOf(newsDate.date))
+      preparedSave.execute
     } catch {
       case e: SQLException => logger.error("Error trying to save date: " + e.getCause)
       case e: Exception => logger.error("Error trying to save date: " + e.getCause)
@@ -30,15 +34,23 @@ class NewsDateDao(val dbConnectionFactory: DbConnectionFactory) {
 
   def findId(date: LocalDate): Int = {
     try {
-      val findNewsDateQuery = s"SELECT * FROM news_dates WHERE date = '$date'"
-      val resultSet = getConnection.prepareStatement(findNewsDateQuery).executeQuery
+      preparedFindId.setDate(1, Date.valueOf(date))
+      val resultSet = preparedFindId.executeQuery
       while(resultSet.next()) {
         return resultSet.getInt("id")
       }
     } catch {
-      case e: SQLException => logger.error(s"Error trying to get date: $date; ${e.getCause}")
+      case e: SQLException =>
+        logger.error(s"Error trying to get date: $date; ${e.getCause}")
+        println(e.printStackTrace())
       case e: Throwable => logger.error(s"Error trying to get date: $date; ${e.getCause}")
+        println(e.printStackTrace())
     }
     -1
+  }
+
+  def closePrepared(): Unit = {
+    preparedSave.close()
+    preparedFindId.close()
   }
 }
