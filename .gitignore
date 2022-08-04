@@ -32,3 +32,5 @@ output.log
 
 #h2 logs
 db/rss_news_words.trace.db
+db/rss_news_words.trace.db.old
+db/rss_news_words.trace.*
