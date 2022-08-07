@@ -32,21 +32,23 @@ class DbConnectionFactory private() {
 
   @throws[SQLException]
   private def createTables(): Unit = {
-    val createNewsDatesTable = "CREATE TABLE news_dates(" +
+    val createSourceDateTable = "CREATE TABLE source_date(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-      "date DATE UNIQUE);"
-    val createNewsSourcesTable = "CREATE TABLE news_sources(" +
-      "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+      "date DATE UNIQUE UNIQUE," +
       "source VARCHAR(10000)," +
-      "date_id INT," +
-      "FOREIGN KEY(date_id) REFERENCES news_dates(id));"
+      "hashed_source VARCHAR(500) UNIQUE);"
+    val createNewsWordsTable = "CREATE TABLE news_words(" +
+      "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+      "word VARCHAR(500) UNIQUE);"
     val createWordFrequencyTable = "CREATE TABLE word_frequency(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-      "word VARCHAR(80)," +
       "frequency SMALLINT," +
-      "source_id INT," +
-      "FOREIGN KEY(source_id) REFERENCES news_sources(id));"
-    connection.createStatement().execute(createNewsDatesTable + createNewsSourcesTable + createWordFrequencyTable)
+      "news_words_id INT," +
+      "sources_dates_id INT," +
+      "FOREIGN KEY(news_words_id) REFERENCES news_words(id)," +
+      "FOREIGN KEY(sources_dates_id) REFERENCES sources_dates(id)," +
+      "UNIQUE KEY `word_source_date` (`news_words_id`,`sources_dates_id`));"
+    connection.createStatement().execute(createSourceDateTable + createNewsWordsTable + createWordFrequencyTable)
   }
 
 

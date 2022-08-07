@@ -1,8 +1,7 @@
-import DAOs.{NewsDateDao, NewsSourceDao, WordFrequencyDao}
+import DAOs.{ArticleDao, NewsDateDao, NewsSourceDao, WordFrequencyDao}
 import DbClasses.{Article, DbConnectionFactory}
-//import Extraction.ArticleExtractor
+import Extraction.ArticleExtractor
 import com.typesafe.scalalogging.Logger
-
 import java.sql.SQLException
 
 object RssNewsPersistence {
@@ -10,6 +9,8 @@ object RssNewsPersistence {
 
 
   def main(args: Array[String]): Unit = {
+//    val articleDao = ArticleDao
+//
 //    ArticleExtractor("../unzipped/news-files/").foreach{ println }
 //
 //    System.exit(1)
