@@ -2,13 +2,15 @@ package DAOs
 
 import DbClasses.{DbConnectionFactory, WordFrequency}
 import com.typesafe.scalalogging.Logger
-import java.sql.{Connection, SQLException}
+
+import java.sql.{Connection, Date, SQLException}
 
 
-class WordFrequencyDao(val dbConnectionFactory: DbConnectionFactory) {
-  private val logger: Logger = Logger("NewsSourceDAO Logger")
+case class WordFrequencyDao(dbConnectionFactory: DbConnectionFactory) {
+  private val logger: Logger = Logger("SourceDateDao Logger")
+
   private val preparedSave = getConnection.prepareStatement(
-    "INSERT INTO word_frequency(word, frequency, source_id) VALUES(?, ?, ?);"
+    "INSERT IGNORE INTO word_frequency(frequency, news_words_id, sources_dates_id) VALUES(?, ?, ?);"
   )
 
 
@@ -18,22 +20,18 @@ class WordFrequencyDao(val dbConnectionFactory: DbConnectionFactory) {
 
   def save(wordFrequency: WordFrequency): Unit = {
     try {
-      preparedSave.setString(1, wordFrequency.word)
-      preparedSave.setInt(2, wordFrequency.frequency)
-      preparedSave.setInt(3, wordFrequency.sourceId)
+      preparedSave.setInt(1, wordFrequency.frequency)
+      preparedSave.setInt(2, wordFrequency.newsWordsId)
+      preparedSave.setInt(3, wordFrequency.sourceDateId)
       preparedSave.execute
     } catch {
-      case e: SQLException => logger.error(s"Error trying to add word: ${wordFrequency.word} ${e.getCause}")
-      case e: Exception => logger.error(s"Error trying to add word: ${wordFrequency.word} ${e.getCause}")
+      case e: SQLException =>
+        logger.error(s"Error trying to save wordFrequency: ${wordFrequency.toString} ${e.getCause}")
+      case e: Exception =>
+        logger.error(s"Error trying to save wordFrequency: ${wordFrequency.toString} ${e.getCause}")
     }
   }
 
 
-  def saveAll(wordFrequencyArr: Array[WordFrequency]): Unit =
-    for(wordFrequency <- wordFrequencyArr) save(wordFrequency)
-
-
   def closePrepared(): Unit = preparedSave.close()
 }
-
-
