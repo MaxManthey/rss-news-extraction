@@ -1,3 +1,3 @@
 package DbClasses
 
-case class WordFrequency(word: String, frequency: Int, sourceId: Int)
+case class WordFrequency(frequency: Int, newsWordsId: Int, sourceDateId: Int)

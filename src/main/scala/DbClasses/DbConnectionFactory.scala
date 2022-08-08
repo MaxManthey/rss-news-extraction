@@ -1,13 +1,9 @@
 package DbClasses
 
-import com.typesafe.scalalogging.Logger
-
-import java.sql.{Connection, DriverManager, PreparedStatement, SQLException}
+import java.sql.{Connection, DriverManager, SQLException}
 
 
 class DbConnectionFactory private() {
-  private val logger: Logger = Logger("DbConnectionFactory Logger")
-  private val driverClassName = "org.h2.Driver"
   private val connectionUrl = "jdbc:h2:./db/rss_news_words"
   private val username = "sa"
   private val password = ""

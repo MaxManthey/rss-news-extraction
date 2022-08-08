@@ -1,4 +1,4 @@
-import DAOs.{ArticleDao, NewsDateDao, NewsSourceDao, WordFrequencyDao}
+import DAOs.{ArticleDao, NewsDateDao, NewsSourceDao, WordFrequencyDaoDepracated}
 import DbClasses.{Article, DbConnectionFactory}
 import Extraction.ArticleExtractor
 import com.typesafe.scalalogging.Logger
@@ -19,7 +19,7 @@ object RssNewsPersistence {
 
     val dateDao = new NewsDateDao(connectionFactory)
     val sourceDao = new NewsSourceDao(connectionFactory)
-    val wordFrequencyDao = new WordFrequencyDao(connectionFactory)
+    val wordFrequencyDao = new WordFrequencyDaoDepracated(connectionFactory)
 
     val filterWords = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
     val lines = try filterWords.mkString.split("\n").map(line => line.split(", ")) finally filterWords.close()

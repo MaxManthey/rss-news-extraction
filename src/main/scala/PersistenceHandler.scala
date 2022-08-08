@@ -1,5 +1,5 @@
-import DAOs.{NewsDateDao, NewsSourceDao, WordFrequencyDao}
-import DbClasses.{NewsDate, NewsSource, WordFrequency}
+import DAOs.{NewsDateDao, NewsSourceDao, WordFrequencyDaoDepracated}
+import DbClasses.{NewsDate, NewsSource, WordFrequencyDeprecated}
 import Extraction.{ArticleExtraction, News}
 import com.typesafe.scalalogging.Logger
 import java.time.LocalDateTime
@@ -14,7 +14,7 @@ class PersistenceHandler private() {
                            miscList: Array[Char],
                            dateDao: NewsDateDao,
                            sourceDao: NewsSourceDao,
-                           wordFrequencyDao: WordFrequencyDao): Unit = {
+                           wordFrequencyDao: WordFrequencyDaoDepracated): Unit = {
     for(fileName <- articleExtraction.getAllFileNamesFromDir) {
       var newsObj: News = null
 
@@ -35,7 +35,7 @@ class PersistenceHandler private() {
 
       wordsMap match {
         case Some(value) =>
-          wordFrequencyDao.saveAll(value.toArray.map(wf => WordFrequency(wf._1, wf._2, sourceId)))
+          wordFrequencyDao.saveAll(value.toArray.map(wf => WordFrequencyDeprecated(wf._1, wf._2, sourceId)))
           logger.info("Successfully added article " + newsObj.source + " to DB")
         case None => logger.error("Failed to add article " + newsObj.source + " to DB")
       }
