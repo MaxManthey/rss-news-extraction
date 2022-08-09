@@ -31,4 +31,4 @@ target/
 output.log
 
 #h2 logs
-db/rss_news_words.trace.*
+db/

@@ -9,15 +9,18 @@ case class SourceDateDao(dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("SourceDateDao Logger")
 
   private val preparedSave = getConnection.prepareStatement(
-    "INSERT IGNORE INTO sources_dates(source, hashed_source, date) VALUES(?, ?, ?);"
+    "INSERT INTO source_date(source, hashed_source, date) VALUES(?, ?, ?);"
   )
   private val preparedFindId = getConnection.prepareStatement(
-    "SELECT * FROM sources_dates WHERE source = ? AND hashed_source = ? AND date = ?;"
+    "SELECT * FROM source_date WHERE source = ? AND hashed_source = ? AND date = ?;"
   )
 
 
   @throws[SQLException]
   private def getConnection: Connection = dbConnectionFactory.getConnection
+
+
+  def saveIfNotExists(sourceDate: SourceDate): Unit = if(findId(sourceDate) == -1) save(sourceDate)
 
 
   def save(sourceDate: SourceDate): Unit = {

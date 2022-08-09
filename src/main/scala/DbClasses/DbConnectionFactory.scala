@@ -2,15 +2,13 @@ package DbClasses
 
 import java.sql.{Connection, DriverManager, SQLException}
 
-
+//TODO pathToDb, username, pw in constructor
 class DbConnectionFactory private() {
-  private val connectionUrl = "jdbc:h2:./db/rss_news_words"
+  private val connectionUrl = "jdbc:h2:../rss_news_words"
   private val username = "sa"
   private val password = ""
 
-  private var connection: Connection = _
-
-  connection = DriverManager.getConnection(connectionUrl, username, password)
+  private val connection: Connection = DriverManager.getConnection(connectionUrl, username, password)
   dropTables()
   createTables()
 
@@ -21,29 +19,29 @@ class DbConnectionFactory private() {
   @throws[SQLException]
   private def dropTables(): Unit = {
     val dropTablesQuery = "DROP TABLE IF EXISTS word_frequency;" +
-      "DROP TABLE IF EXISTS news_sources;" +
-      "DROP TABLE IF EXISTS news_dates;"
+    "DROP TABLE IF EXISTS news_words;" +
+    "DROP TABLE IF EXISTS source_date;"
     connection.createStatement().execute(dropTablesQuery)
   }
 
   @throws[SQLException]
   private def createTables(): Unit = {
-    val createSourceDateTable = "CREATE TABLE source_date(" +
+    val createSourceDateTable = "CREATE TABLE IF NOT EXISTS source_date(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-      "date DATE UNIQUE UNIQUE," +
+      "date DATE," +
       "source VARCHAR(10000)," +
       "hashed_source VARCHAR(500) UNIQUE);"
-    val createNewsWordsTable = "CREATE TABLE news_words(" +
+    val createNewsWordsTable = "CREATE TABLE IF NOT EXISTS news_words(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
       "word VARCHAR(500) UNIQUE);"
-    val createWordFrequencyTable = "CREATE TABLE word_frequency(" +
+    val createWordFrequencyTable = "CREATE TABLE IF NOT EXISTS word_frequency(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
       "frequency SMALLINT," +
       "news_words_id INT," +
-      "sources_dates_id INT," +
+      "source_date_id INT," +
       "FOREIGN KEY(news_words_id) REFERENCES news_words(id)," +
-      "FOREIGN KEY(sources_dates_id) REFERENCES sources_dates(id)," +
-      "UNIQUE KEY `word_source_date` (`news_words_id`,`sources_dates_id`));"
+      "FOREIGN KEY(source_date_id) REFERENCES source_date(id)," +
+      "UNIQUE KEY `word_source_date` (`news_words_id`,`source_date_id`));"
     connection.createStatement().execute(createSourceDateTable + createNewsWordsTable + createWordFrequencyTable)
   }
 

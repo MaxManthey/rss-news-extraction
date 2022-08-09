@@ -1,3 +1,5 @@
+//TODO DELETE
+
 package DAOs
 
 import DbClasses.{DbConnectionFactory, WordFrequencyDeprecated}
