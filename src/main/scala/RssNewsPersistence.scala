@@ -5,11 +5,10 @@ import Extraction.ArticleExtractor
 
 object RssNewsPersistence {
   def main(args: Array[String]): Unit = {
-    //TODO remove db
-    val connectionFactory = DbConnectionFactory.getInstance
+    val connectionFactory = DbConnectionFactory(args(0))
     val articleDao = ArticleDao(connectionFactory)
 
-    ArticleExtractor("../test-news-file/").foreach {
+    ArticleExtractor(args(1)).foreach {
       article: Article => articleDao.save(article)
     }
 

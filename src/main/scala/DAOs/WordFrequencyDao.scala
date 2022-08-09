@@ -10,10 +10,10 @@ case class WordFrequencyDao(dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("SourceDateDao Logger")
 
   private val preparedSave = getConnection.prepareStatement(
-    "INSERT INTO word_frequency(frequency, news_words_id, source_date_id) VALUES(?, ?, ?);"
+    "INSERT INTO word_frequency(frequency, news_word_id, source_date_id) VALUES(?, ?, ?);"
   )
   private val preparedFindId = getConnection.prepareStatement(
-    "SELECT * FROM word_frequency WHERE frequency = ? AND news_words_id = ? AND source_date_id = ?;"
+    "SELECT * FROM word_frequency WHERE frequency = ? AND news_word_id = ? AND source_date_id = ?;"
   )
 
 
