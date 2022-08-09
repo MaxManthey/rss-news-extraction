@@ -1,31 +1,43 @@
 package DAOs
 
-import DbClasses.{Article, DbConnectionFactory}
+import DbClasses.{Article, DbConnectionFactory, NewsWord, SourceDate, WordFrequency}
 import com.typesafe.scalalogging.Logger
-import java.sql.{Connection, SQLException}
+import java.security.MessageDigest
+import java.sql.SQLException
 
 
 case class ArticleDao(dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("ArticleDao Logger")
-  private val preparedSave = getConnection.prepareStatement(
-    "INSERT INTO x(x) VALUES(?);"
-  ) //TODO adjust insert
+
+  private val sourceDateDao = SourceDateDao(dbConnectionFactory)
+  private val newsWordDao = NewsWordDao(dbConnectionFactory)
+  private val wordFrequencyDao = WordFrequencyDao(dbConnectionFactory)
 
 
-  @throws[SQLException]
-  private def getConnection: Connection = dbConnectionFactory.getConnection
-
-
-  def save(article: Article): Unit = { //TODO adjust save
+  def save(article: Article): Unit = {
     try {
-      preparedSave.setString(1, article.source)
-      preparedSave.execute
+      val sourceDate = SourceDate(article.date, article.source,
+        MessageDigest.getInstance("MD5").digest(article.source.getBytes).map("%02x".format(_)).mkString)
+      sourceDateDao.saveIfNotExists(sourceDate)
+      val sourceDateId = sourceDateDao.findId(sourceDate)
+
+      for(word <- article.wordsMap.keys) {
+        val newsWord = NewsWord(word)
+        newsWordDao.saveIfNotExists(newsWord)
+        val newsWordId = newsWordDao.findId(newsWord)
+        wordFrequencyDao.saveIfNotExists(WordFrequency(article.wordsMap(word), newsWordId, sourceDateId))
+      }
+
+      logger.info(s"Succesfully saved article: ${article.source}")
     } catch {
-      case e: SQLException => logger.error("Error trying to save article: " + e.getCause)
-      case e: Exception => logger.error("Error trying to save article: " + e.getCause)
+      case e: SQLException => logger.error(s"Error trying to save article: ${article.toString}" + e.getCause)
+      case e: Exception => logger.error(s"Error trying to save article: ${article.toString}" + e.getCause)
     }
   }
 
-
-  def closePrepared(): Unit = preparedSave.close()
+  def closePrepared(): Unit = {
+    sourceDateDao.closePrepared()
+    newsWordDao.closePrepared()
+    wordFrequencyDao.closePrepared()
+  }
 }

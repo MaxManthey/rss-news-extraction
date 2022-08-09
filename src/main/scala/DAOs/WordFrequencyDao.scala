@@ -10,12 +10,18 @@ case class WordFrequencyDao(dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("SourceDateDao Logger")
 
   private val preparedSave = getConnection.prepareStatement(
-    "INSERT IGNORE INTO word_frequency(frequency, news_words_id, sources_dates_id) VALUES(?, ?, ?);"
+    "INSERT INTO word_frequency(frequency, news_words_id, source_date_id) VALUES(?, ?, ?);"
+  )
+  private val preparedFindId = getConnection.prepareStatement(
+    "SELECT * FROM word_frequency WHERE frequency = ? AND news_words_id = ? AND source_date_id = ?;"
   )
 
 
   @throws[SQLException]
   private def getConnection: Connection = dbConnectionFactory.getConnection
+
+
+  def saveIfNotExists(wordFrequency: WordFrequency): Unit = if(findId(wordFrequency) == -1) save(wordFrequency)
 
 
   def save(wordFrequency: WordFrequency): Unit = {
@@ -33,5 +39,24 @@ case class WordFrequencyDao(dbConnectionFactory: DbConnectionFactory) {
   }
 
 
-  def closePrepared(): Unit = preparedSave.close()
+  def findId(wordFrequency: WordFrequency): Int = {
+    try {
+      preparedFindId.setInt(1, wordFrequency.frequency)
+      preparedFindId.setInt(2, wordFrequency.newsWordsId)
+      preparedFindId.setInt(3, wordFrequency.sourceDateId)
+      val resultSet = preparedFindId.executeQuery
+      while(resultSet.next()) {
+        return resultSet.getInt("id")
+      }
+    } catch {
+      case e: SQLException => logger.error(s"Error trying to find sourceDate: ${wordFrequency.toString} ${e.getCause}")
+      case e: Exception => logger.error(s"Error trying to find sourceDate: ${wordFrequency.toString} ${e.getCause}")
+    }
+    -1
+  }
+
+
+  def closePrepared(): Unit = {
+    preparedSave.close()
+  }
 }

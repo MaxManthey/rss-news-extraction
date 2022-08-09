@@ -1,3 +1,5 @@
+//TODO DELETE
+
 package DAOs
 
 import DbClasses.{DbConnectionFactory, NewsDate}
@@ -40,11 +42,8 @@ class NewsDateDao(val dbConnectionFactory: DbConnectionFactory) {
         return resultSet.getInt("id")
       }
     } catch {
-      case e: SQLException =>
-        logger.error(s"Error trying to get date: $date; ${e.getCause}")
-        println(e.printStackTrace())
+      case e: SQLException => logger.error(s"Error trying to get date: $date; ${e.getCause}")
       case e: Throwable => logger.error(s"Error trying to get date: $date; ${e.getCause}")
-        println(e.printStackTrace())
     }
     -1
   }

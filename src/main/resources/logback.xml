@@ -4,7 +4,7 @@
         <append>true</append>
         <immediateFlush>true</immediateFlush>
         <encoder>
-            <pattern>%date [%thread] %-5level - %msg%n</pattern>
+            <pattern>%date [%thread] - %logger: %-5level - %msg%n</pattern>
         </encoder>
     </appender>
 
