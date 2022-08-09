@@ -9,10 +9,10 @@ case class NewsWordDao(dbConnectionFactory: DbConnectionFactory) {
   private val logger: Logger = Logger("NewsWordDao Logger")
 
   private val preparedSave = getConnection.prepareStatement(
-    "INSERT INTO news_words(word) VALUES(?);"
+    "INSERT INTO news_word(word) VALUES(?);"
   )
   private val preparedFindId = getConnection.prepareStatement(
-    "SELECT * FROM news_words WHERE word = ?;"
+    "SELECT * FROM news_word WHERE word = ?;"
   )
 
 
@@ -20,7 +20,6 @@ case class NewsWordDao(dbConnectionFactory: DbConnectionFactory) {
   private def getConnection: Connection = dbConnectionFactory.getConnection
 
 
-  //TODO error testen
   def saveIfNotExists(newsWord: NewsWord): Unit = if(findId(newsWord) == -1) save(newsWord)
 
 
