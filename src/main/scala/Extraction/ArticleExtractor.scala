@@ -8,6 +8,7 @@ import spray.json._
 import java.io.File
 import java.time.LocalDateTime
 import scala.collection.mutable.ArrayBuffer
+import scala.util.control.Breaks.{break, breakable}
 
 
 case class ArticleExtractor(dirName: String) extends Iterable[Article] {
@@ -16,34 +17,34 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
   private val filterWords = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
   private val lines = try filterWords.mkString.split("\n").map(line => line.split(", ")) finally filterWords.close()
   private val (stoppwortList, miscList) = (lines(0), lines(1).map(el => el.charAt(0)))
-  private val arti = ArrayBuffer[Article]()
+  private val articleIterator = ArrayBuffer[Article]()
 
 
   override def iterator: Iterator[Article] = {
     for(fileName <- getAllFileNamesFromDir) {
-      var newsObj: News = null //todo somehow to val
+      breakable {
+        val newsObjOption = getNewsObject(fileName)
+        val newsObj = if(newsObjOption.isDefined) newsObjOption.get else {
+          logger.error("JSON file could not be parsed")
+          break
+        }
 
-      val article = getNewsObject(fileName) match {
-        case Some(value) =>
-          newsObj = value
-          Some(stripHtml(value.article, stoppwortList, miscList))
-        case None => None
-      }
+        val article = stripHtml(newsObj.article)
+        if(article.isEmpty) {
+          logger.error(s"Article in ${newsObj.source} is empty")
+          break
+        }
 
+        val wordsMap = wordsByFrequency(article)
+        if(wordsMap.isEmpty) {
+          logger.error(s"Error trying to create wordsMap from article: ${newsObj.article}")
+          break
+        }
 
-      val wordsMap = article match {
-        case Some(value) => Some(wordsByFrequency(value))
-        case None => None
-      }
-
-      wordsMap match {
-        case Some(value) =>
-          arti.addOne(Article(newsObj.source, LocalDateTime.parse(newsObj.dateTime).toLocalDate, value))
-        case None => logger.error("Failed to add article " + newsObj.source + " to DB")
+        articleIterator.addOne(Article(newsObj.source, LocalDateTime.parse(newsObj.dateTime).toLocalDate, wordsMap))
       }
     }
-
-    arti.iterator
+    articleIterator.iterator
   }
 
 
@@ -64,14 +65,19 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
   }
 
 
-  private def stripHtml(htmlArticle: String, stoppwortList: Array[String], miscList: Array[Char]): Array[String] =
+  private def stripHtml(htmlArticle: String): Array[String] =
     CanolaExtractor.INSTANCE.getText(htmlArticle)
       .split('\n').mkString("", " ", "").split(" ")
       .map(el => {
-        if(el.nonEmpty && miscList.contains(el(el.length-1))) el.dropRight(1)
-        else el
+        var newEl = el
+        while(newEl.nonEmpty && miscList.contains(newEl(newEl.length-1))) newEl = newEl.dropRight(1)
+        newEl
       })
-      .map(el => if(el.nonEmpty && miscList.contains(el.head)) el.drop(1) else el)
+      .map(el => {
+        var newEl = el
+        while(newEl.nonEmpty && miscList.contains(newEl.head)) newEl = newEl.drop(1)
+        newEl
+      })
       .filter(el => el.length > 1 && !stoppwortList.contains(el.toLowerCase))
       .map(el => el.toLowerCase())
 
