@@ -28,7 +28,7 @@ case class ArticleDao(dbConnectionFactory: DbConnectionFactory) {
         wordFrequencyDao.saveIfNotExists(WordFrequency(article.wordsMap(word), newsWordId, sourceDateId))
       }
 
-      logger.info(s"Succesfully saved article: ${article.source}")
+      logger.info(s"Successfully saved article: ${article.source}")
     } catch {
       case e: SQLException => logger.error(s"Error trying to save article: ${article.toString}" + e.getCause)
       case e: Exception => logger.error(s"Error trying to save article: ${article.toString}" + e.getCause)
