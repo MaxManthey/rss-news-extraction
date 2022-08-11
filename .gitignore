@@ -30,5 +30,5 @@ target/
 #logs
 output.log
 
-#h2 logs
-db/
+#h2
+*.db
