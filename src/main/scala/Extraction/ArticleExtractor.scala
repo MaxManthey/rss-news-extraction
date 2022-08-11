@@ -83,5 +83,5 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
 
 
   private def wordsByFrequency(article: Array[String]): Map[String, Int] =
-    article.groupBy(identity).transform((k, v) => v.size)
+    article.groupBy(identity).transform((k, v) => v.length)
 }
