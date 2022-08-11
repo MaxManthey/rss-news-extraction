@@ -6,8 +6,8 @@ import scala.collection.mutable.ArrayBuffer
 
 
 class DbConnectionFactoryTest extends AnyFunSuite with BeforeAndAfter {
-  val dbConnectionPath = "./src/test/db"
-  var dbConnectionFactory: DbConnectionFactory = _
+  private val dbConnectionPath = "./src/test/db"
+  private var dbConnectionFactory: DbConnectionFactory = _
 
 
   before{

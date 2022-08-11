@@ -1,4 +1,4 @@
-package DAOs
+package DAO
 
 import DbClasses.{DbConnectionFactory, SourceDate}
 import com.typesafe.scalalogging.Logger
