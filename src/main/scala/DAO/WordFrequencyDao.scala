@@ -1,4 +1,4 @@
-package DAOs
+package DAO
 
 import DbClasses.{DbConnectionFactory, WordFrequency}
 import com.typesafe.scalalogging.Logger

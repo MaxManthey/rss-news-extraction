@@ -1,4 +1,4 @@
-import DAOs.ArticleDao
+import DAO.ArticleDao
 import DbClasses.{Article, DbConnectionFactory}
 import Extraction.ArticleExtractor
 
