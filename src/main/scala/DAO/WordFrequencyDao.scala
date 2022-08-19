@@ -49,8 +49,8 @@ case class WordFrequencyDao(dbConnectionFactory: DbConnectionFactory) {
         return resultSet.getInt("id")
       }
     } catch {
-      case e: SQLException => logger.error(s"Error trying to find sourceDate: ${wordFrequency.toString} ${e.getCause}")
-      case e: Exception => logger.error(s"Error trying to find sourceDate: ${wordFrequency.toString} ${e.getCause}")
+      case e: SQLException => logger.error(s"Error trying to find wordFrequency: ${wordFrequency.toString} ${e.getCause}")
+      case e: Exception => logger.error(s"Error trying to find wordFrequency: ${wordFrequency.toString} ${e.getCause}")
     }
     -1
   }
