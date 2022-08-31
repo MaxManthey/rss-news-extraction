@@ -20,7 +20,7 @@ case class NewsWordDao(dbConnectionFactory: DbConnectionFactory) {
   private def getConnection: Connection = dbConnectionFactory.getConnection
 
 
-  def saveIfNotExists(newsWord: NewsWord): Unit = if(findId(newsWord) == -1) save(newsWord)
+  def saveIfNotExists(newsWord: NewsWord): Unit = if(findId(newsWord).isEmpty) save(newsWord)
 
 
   def save(newsWord: NewsWord): Unit = {
@@ -34,18 +34,18 @@ case class NewsWordDao(dbConnectionFactory: DbConnectionFactory) {
   }
 
 
-  def findId(newsWord: NewsWord): Int = {
+  def findId(newsWord: NewsWord): Option[Int] = {
     try {
       preparedFindId.setString(1, newsWord.word)
       val resultSet = preparedFindId.executeQuery
-      while(resultSet.next()) {
-        return resultSet.getInt("id")
+      if(resultSet.next()) {
+        return Some(resultSet.getInt("id"))
       }
     } catch {
       case e: SQLException => logger.error(s"Error trying to find word: ${newsWord.word} - ${e.getCause}")
       case e: Exception => logger.error(s"Error trying to find word: ${newsWord.word} - ${e.getCause}")
     }
-    -1
+    None
   }
 
 

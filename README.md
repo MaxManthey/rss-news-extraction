@@ -6,3 +6,7 @@ This project extracts articles from html files and saves them to an H2 database 
 ### Run
 
 To run the project, make sure to add path variables for where you want your database to be saved [first arg] and the folder where your JSON files are saved [second arg].
+
+### Error Output
+
+If an error occurs, a `output.log` file will be created on the root level of the project.

@@ -19,12 +19,18 @@ case class ArticleDao(dbConnectionFactory: DbConnectionFactory) {
       val sourceDate = SourceDate(article.date, article.source,
         MessageDigest.getInstance("MD5").digest(article.source.getBytes).map("%02x".format(_)).mkString)
       sourceDateDao.saveIfNotExists(sourceDate)
-      val sourceDateId = sourceDateDao.findId(sourceDate)
+      val sourceDateId = sourceDateDao.findId(sourceDate) match {
+        case Some(value) => value
+        case None => -1
+      }
 
       for(word <- article.wordsMap.keys) {
         val newsWord = NewsWord(word)
         newsWordDao.saveIfNotExists(newsWord)
-        val newsWordId = newsWordDao.findId(newsWord)
+        val newsWordId = newsWordDao.findId(newsWord) match {
+          case Some(value) => value
+          case None => -1
+        }
         wordFrequencyDao.saveIfNotExists(WordFrequency(article.wordsMap(word), newsWordId, sourceDateId))
       }
 
