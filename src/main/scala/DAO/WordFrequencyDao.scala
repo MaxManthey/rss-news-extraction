@@ -21,7 +21,7 @@ case class WordFrequencyDao(dbConnectionFactory: DbConnectionFactory) {
   private def getConnection: Connection = dbConnectionFactory.getConnection
 
 
-  def saveIfNotExists(wordFrequency: WordFrequency): Unit = if(findId(wordFrequency) == -1) save(wordFrequency)
+  def saveIfNotExists(wordFrequency: WordFrequency): Unit = if(findId(wordFrequency).isEmpty) save(wordFrequency)
 
 
   def save(wordFrequency: WordFrequency): Unit = {
@@ -39,20 +39,20 @@ case class WordFrequencyDao(dbConnectionFactory: DbConnectionFactory) {
   }
 
 
-  def findId(wordFrequency: WordFrequency): Int = {
+  def findId(wordFrequency: WordFrequency): Option[Int] = {
     try {
       preparedFindId.setInt(1, wordFrequency.frequency)
       preparedFindId.setInt(2, wordFrequency.newsWordsId)
       preparedFindId.setInt(3, wordFrequency.sourceDateId)
       val resultSet = preparedFindId.executeQuery
-      while(resultSet.next()) {
-        return resultSet.getInt("id")
+      if(resultSet.next()) {
+        return Some(resultSet.getInt("id"))
       }
     } catch {
       case e: SQLException => logger.error(s"Error trying to find wordFrequency: ${wordFrequency.toString} ${e.getCause}")
       case e: Exception => logger.error(s"Error trying to find wordFrequency: ${wordFrequency.toString} ${e.getCause}")
     }
-    -1
+    None
   }
 
 

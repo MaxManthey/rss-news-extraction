@@ -29,8 +29,8 @@ case class DbConnectionFactory(pathToDb: String) {
     val createSourceDateTable = "CREATE TABLE IF NOT EXISTS source_date(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
       "date DATE," +
-      "source VARCHAR(10000)," +
-      "hashed_source VARCHAR(500) UNIQUE);"
+      "source CLOB," +
+      "hashed_source VARCHAR(32) UNIQUE);"
     val createNewsWordsTable = "CREATE TABLE IF NOT EXISTS news_word(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
       "word VARCHAR(500) UNIQUE);"

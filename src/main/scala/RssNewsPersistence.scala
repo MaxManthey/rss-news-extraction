@@ -9,6 +9,7 @@ object RssNewsPersistence {
 
   def main(args: Array[String]): Unit = {
     if(args.length != 2) {
+      println("Amount of args incorrect. For more details, please refer to the readme.")
       logger.error("Amount of args incorrect. For more details, please refer to the readme")
       sys.exit(1)
     }
