@@ -69,14 +69,16 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
     CanolaExtractor.INSTANCE.getText(htmlArticle)
       .split('\n').mkString("", " ", "").split(" ")
       .map(el => {
-        var newEl = el
-        while(newEl.nonEmpty && miscList.contains(newEl(newEl.length-1))) newEl = newEl.dropRight(1)
-        newEl
+        val newEl = el.split("").map(x => x.charAt(0)).to(ArrayBuffer)
+        while(newEl.nonEmpty && miscList.contains(newEl(newEl.length-1))) newEl.remove(newEl.length-1)
+        newEl.mkString("")
       })
       .map(el => {
-        var newEl = el
-        while(newEl.nonEmpty && miscList.contains(newEl.head)) newEl = newEl.drop(1)
-        newEl
+        if(el.nonEmpty) {
+          val newEl = el.split("").map(x => x.charAt(0)).to(ArrayBuffer)
+          while(newEl.nonEmpty && miscList.contains(newEl.head)) newEl.remove(0)
+          newEl.mkString("")
+        } else el
       })
       .filter(el => el.length > 1 && !stoppwortList.contains(el.toLowerCase))
       .map(el => el.toLowerCase())
