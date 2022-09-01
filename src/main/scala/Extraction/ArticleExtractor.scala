@@ -69,9 +69,11 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
     CanolaExtractor.INSTANCE.getText(htmlArticle)
       .split('\n').mkString("", " ", "").split(" ")
       .map(el => {
-        val newEl = el.split("").map(x => x.charAt(0)).to(ArrayBuffer)
-        while(newEl.nonEmpty && miscList.contains(newEl(newEl.length-1))) newEl.remove(newEl.length-1)
-        newEl.mkString("")
+        if(el.nonEmpty) {
+          val newEl = el.split("").map(x => x.charAt(0)).to(ArrayBuffer)
+          while(newEl.nonEmpty && miscList.contains(newEl(newEl.length-1))) newEl.remove(newEl.length-1)
+          newEl.mkString("")
+        } else el
       })
       .map(el => {
         if(el.nonEmpty) {
