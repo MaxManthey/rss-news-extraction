@@ -29,14 +29,14 @@ class NewsWordDaoTest extends AnyFunSuite with BeforeAndAfter with PrivateMethod
 
 
   test("nonexistent column returns -1") {
-    assert(newsWordDao.findId(NewsWord("nonexistent")) == -1)
+    assert(newsWordDao.findId(NewsWord("nonexistent")).isEmpty)
   }
 
 
   test("saving and finding is working") {
     val newsWord = NewsWord("savingTest")
     newsWordDao.save(newsWord)
-    assert(newsWordDao.findId(newsWord) == 1)
+    assert(newsWordDao.findId(newsWord).isDefined)
   }
 
 
@@ -44,6 +44,6 @@ class NewsWordDaoTest extends AnyFunSuite with BeforeAndAfter with PrivateMethod
     val newsWord = NewsWord("saveIfNotExists")
     newsWordDao.saveIfNotExists(newsWord)
     newsWordDao.saveIfNotExists(newsWord)
-    assert(newsWordDao.findId(newsWord) == 1)
+    assert(newsWordDao.findId(newsWord).isDefined)
   }
 }

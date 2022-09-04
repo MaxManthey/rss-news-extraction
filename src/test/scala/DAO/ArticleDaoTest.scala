@@ -24,16 +24,18 @@ class ArticleDaoTest extends AnyFunSuite with BeforeAndAfter {
 
 
   test("NewsWord exists") {
-    assert(NewsWordDao(dbConnectionFactory).findId(NewsWord("test")) == 1)
+    assert(NewsWordDao(dbConnectionFactory).findId(NewsWord("test")).isDefined)
   }
 
 
   test("SourceDate exists") {
-    assert(SourceDateDao(dbConnectionFactory).findId(SourceDate(LocalDate.of(2021, 2, 8), "abc.de", "a3ccb51e1b5b2dc6a67774dc5c9d27b0")) == 1)
+    assert(SourceDateDao(dbConnectionFactory).findId(
+      SourceDate(LocalDate.of(2021, 2, 8), "abc.de", "a3ccb51e1b5b2dc6a67774dc5c9d27b0"))
+      .isDefined)
   }
 
 
   test("WordFrequency exists") {
-    assert(WordFrequencyDao(dbConnectionFactory).findId(WordFrequency(3, 1, 1)) == 1)
+    assert(WordFrequencyDao(dbConnectionFactory).findId(WordFrequency(3, 1, 1)).isDefined)
   }
 }

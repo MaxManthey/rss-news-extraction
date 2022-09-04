@@ -37,14 +37,14 @@ class WordFrequencyDaoTest extends AnyFunSuite with BeforeAndAfter with PrivateM
 
 
   test("nonexistent column returns -1") {
-    assert(wordFrequencyDao.findId(WordFrequency(123, 23, 32)) == -1)
+    assert(wordFrequencyDao.findId(WordFrequency(123, 23, 32)).isEmpty)
   }
 
 
   test("saving and finding is working") {
     val wordFrequency = WordFrequency(123, 1, 1)
     wordFrequencyDao.save(wordFrequency)
-    assert(wordFrequencyDao.findId(wordFrequency) == 1)
+    assert(wordFrequencyDao.findId(wordFrequency).isDefined)
   }
 
 
@@ -52,7 +52,7 @@ class WordFrequencyDaoTest extends AnyFunSuite with BeforeAndAfter with PrivateM
     val wordFrequency = WordFrequency(123, 1, 1)
     wordFrequencyDao.saveIfNotExists(wordFrequency)
     wordFrequencyDao.saveIfNotExists(wordFrequency)
-    assert(wordFrequencyDao.findId(wordFrequency) == 1)
+    assert(wordFrequencyDao.findId(wordFrequency).isDefined)
   }
 }
 
