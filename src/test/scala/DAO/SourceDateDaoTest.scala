@@ -30,14 +30,16 @@ class SourceDateDaoTest extends AnyFunSuite with BeforeAndAfter with PrivateMeth
 
 
   test("nonexistent column returns -1") {
-    assert(sourceDateDao.findId(SourceDate(LocalDate.of(2022, 1, 8), "nonexistent", "123")) == -1)
+    assert(sourceDateDao
+      .findId(SourceDate(LocalDate.of(2022, 1, 8), "nonexistent", "123"))
+      .isEmpty)
   }
 
 
   test("saving and finding is working") {
     val sourceDate = SourceDate(LocalDate.of(2021, 2, 8), "saving", "321")
     sourceDateDao.save(sourceDate)
-    assert(sourceDateDao.findId(sourceDate) == 1)
+    assert(sourceDateDao.findId(sourceDate).isDefined)
   }
 
 
@@ -45,6 +47,6 @@ class SourceDateDaoTest extends AnyFunSuite with BeforeAndAfter with PrivateMeth
     val sourceDate = SourceDate(LocalDate.of(2019, 3, 8), "saveIfNotExists", "213")
     sourceDateDao.saveIfNotExists(sourceDate)
     sourceDateDao.saveIfNotExists(sourceDate)
-    assert(sourceDateDao.findId(sourceDate) == 1)
+    assert(sourceDateDao.findId(sourceDate).isDefined)
   }
 }

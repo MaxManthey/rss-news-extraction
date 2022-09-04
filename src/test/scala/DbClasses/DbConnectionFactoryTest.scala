@@ -18,11 +18,6 @@ class DbConnectionFactoryTest extends AnyFunSuite with BeforeAndAfter {
   }
 
 
-  test("Db connection is working") {
-    assert(dbConnectionFactory.getConnection.toString == "conn0: url=jdbc:h2:./src/test/db/rss_news_articles user=SA")
-  }
-
-
   test("all tables exist") {
     val expectedResult = List("NEWS_WORD", "SOURCE_DATE", "WORD_FREQUENCY")
     val dbMetaData = dbConnectionFactory.getConnection.getMetaData
