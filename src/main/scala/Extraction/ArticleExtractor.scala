@@ -8,7 +8,6 @@ import spray.json._
 import java.io.File
 import java.time.LocalDateTime
 import scala.collection.mutable.ArrayBuffer
-import scala.util.control.Breaks.{break, breakable}
 
 
 case class ArticleExtractor(dirName: String) extends Iterable[Article] {
@@ -17,34 +16,32 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
   private val filterWords = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
   private val lines = try filterWords.mkString.split("\n").map(line => line.split(", ")) finally filterWords.close()
   private val (stoppwortList, miscList) = (lines(0), lines(1).map(el => el.charAt(0)))
-  private val articleIterator = ArrayBuffer[Article]()
 
 
-  override def iterator: Iterator[Article] = {
-    for(fileName <- getAllFileNamesFromDir) {
-      breakable {
-        val newsObjOption = getNewsObject(fileName)
-        val newsObj = if(newsObjOption.isDefined) newsObjOption.get else {
-          logger.error("JSON file could not be parsed")
-          break
-        }
+  override def iterator: Iterator[Article] =
+    getAllFileNamesFromDir.iterator.map(file => createArticle(file)).collect{ case Some(article) => article}
 
-        val article = stripHtml(newsObj.article)
-        if(article.isEmpty) {
-          logger.error(s"Article in ${newsObj.source} is empty")
-          break
-        }
 
-        val wordsMap = wordsByFrequency(article)
-        if(wordsMap.isEmpty) {
-          logger.error(s"Error trying to create wordsMap from article: ${newsObj.article}")
-          break
-        }
-
-        articleIterator.addOne(Article(newsObj.source, LocalDateTime.parse(newsObj.dateTime).toLocalDate, wordsMap))
-      }
+  private def createArticle(fileName: File): Option[Article] = {
+    val newsObjOption = getNewsObject(fileName)
+    val newsObj = if(newsObjOption.isDefined) newsObjOption.get else {
+      logger.error("JSON file could not be parsed")
+      return None
     }
-    articleIterator.iterator
+
+    val article = stripHtml(newsObj.article)
+    if(article.isEmpty) {
+      logger.error(s"Article in ${newsObj.source} is empty")
+      return None
+    }
+
+    val wordsMap = wordsByFrequency(article)
+    if(wordsMap.isEmpty) {
+      logger.error(s"Error trying to create wordsMap from article: ${newsObj.article}")
+      return None
+    }
+
+    Some(Article(newsObj.source, LocalDateTime.parse(newsObj.dateTime).toLocalDate, wordsMap))
   }
 
 
