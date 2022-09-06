@@ -19,7 +19,9 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
 
 
   override def iterator: Iterator[Article] =
-    getAllFileNamesFromDir.iterator.map(file => createArticle(file)).collect{ case Some(article) => article}
+    getAllFileNamesFromDir.iterator.collect(file => createArticle(file) match {
+      case Some(article) => article
+    })
 
 
   private def createArticle(fileName: File): Option[Article] = {
