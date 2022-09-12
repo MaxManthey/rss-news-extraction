@@ -7,7 +7,6 @@ import de.l3s.boilerpipe.extractors.CanolaExtractor
 import spray.json._
 import java.io.File
 import java.time.LocalDateTime
-import scala.collection.mutable.ArrayBuffer
 
 
 case class ArticleExtractor(dirName: String) extends Iterable[Article] {
@@ -15,7 +14,7 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
 
   private val filterWords = scala.io.Source.fromFile("src/main/resources/FilterWords.txt")
   private val lines = try filterWords.mkString.split("\n").map(line => line.split(", ")) finally filterWords.close()
-  private val (stoppwortList, miscList) = (lines(0), lines(1).map(el => el.charAt(0)))
+  private val (stoppwortList, specialCharList) = (lines(0), lines(1).map(el => el.charAt(0)))
 
 
   override def iterator: Iterator[Article] =
@@ -67,22 +66,29 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
   private def stripHtml(htmlArticle: String): Array[String] =
     CanolaExtractor.INSTANCE.getText(htmlArticle)
       .split('\n').mkString("", " ", "").split(" ")
-      .map(el => {
-        if(el.nonEmpty) {
-          val newEl = el.split("").map(x => x.charAt(0)).to(ArrayBuffer)
-          while(newEl.nonEmpty && miscList.contains(newEl(newEl.length-1))) newEl.remove(newEl.length-1)
-          newEl.mkString("")
-        } else el
-      })
-      .map(el => {
-        if(el.nonEmpty) {
-          val newEl = el.split("").map(x => x.charAt(0)).to(ArrayBuffer)
-          while(newEl.nonEmpty && miscList.contains(newEl.head)) newEl.remove(0)
-          newEl.mkString("")
-        } else el
-      })
+      .map(el => removeSpecialCharacters(el))
       .filter(el => el.length > 1 && !stoppwortList.contains(el.toLowerCase))
       .map(el => el.toLowerCase())
+
+
+  private def removeSpecialCharacters(el: String): String = {
+    if(el.nonEmpty) {
+      var newEl = el
+      while(newEl.nonEmpty && (isSpecialCharacter(newEl.charAt(newEl.length-1)) || isSpecialCharacter(newEl.head)))
+        newEl = removeSpecialCharactersFromStartAndEnd(newEl)
+      newEl
+    } else el
+  }
+
+
+  private def removeSpecialCharactersFromStartAndEnd(text: String) = {
+    val from = if (text.length > 1 && isSpecialCharacter(text.charAt(0))) 1 else 0
+    val to = if (isSpecialCharacter(text.charAt(text.length - 1))) text.length - 1 else text.length
+    text.substring(from, to)
+  }
+
+
+  private def isSpecialCharacter(c: Char) = specialCharList.contains(c)
 
 
   private def wordsByFrequency(article: Array[String]): Map[String, Int] =
