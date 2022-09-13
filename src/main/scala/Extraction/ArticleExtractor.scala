@@ -71,21 +71,13 @@ case class ArticleExtractor(dirName: String) extends Iterable[Article] {
       .map(el => el.toLowerCase())
 
 
-  def removeSpecialCharacters(text: String) = {
-    val from = if(text.length > 1 && isSpecialCharacter(text.charAt(0))) {
-      val indicesOfNonSpecialChars = for(i <- 0 until text.length; if !isSpecialCharacter(text(i))) yield i
-      if(indicesOfNonSpecialChars.isEmpty || indicesOfNonSpecialChars(0) == text.length) 1
-      else indicesOfNonSpecialChars(0)
-    } else 0
-
-    val to = if(text.length > 1 && isSpecialCharacter(text.charAt(text.length - 1))) {
-      val indicesOfNonSpecialChars = for(i <- text.length-1 to 0 by -1; if !isSpecialCharacter(text(i))) yield i
-      if(indicesOfNonSpecialChars.isEmpty || indicesOfNonSpecialChars(0) == 0) 1
-      else indicesOfNonSpecialChars(0)+1
-    } else text.length
-
-    text.substring(from, to)
-  }
+  def removeSpecialCharacters(text: String) =
+    text.toSeq
+      .dropWhile(isSpecialCharacter)
+      .reverse
+      .dropWhile(isSpecialCharacter)
+      .reverse
+      .toString
 
 
   private def isSpecialCharacter(c: Char) = specialCharList.contains(c)
