@@ -1,4 +1,4 @@
-package Extraction
+package persistence.Extraction
 
 import org.scalatest.PrivateMethodTester
 import org.scalatest.OptionValues.convertOptionToValuable

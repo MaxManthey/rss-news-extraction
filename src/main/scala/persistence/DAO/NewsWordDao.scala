@@ -1,6 +1,6 @@
-package DAO
+package persistence.DAO
 
-import DbClasses.{DbConnectionFactory, NewsWord}
+import persistence.DbClasses.{DbConnectionFactory, NewsWord}
 import com.typesafe.scalalogging.Logger
 import java.sql.{Connection, SQLException}
 

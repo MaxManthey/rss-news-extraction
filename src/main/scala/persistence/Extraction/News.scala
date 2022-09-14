@@ -1,4 +1,4 @@
-package Extraction
+package persistence.Extraction
 
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 

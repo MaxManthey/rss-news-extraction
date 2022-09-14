@@ -1,7 +1,8 @@
-package DAO
+package persistence.DAO
 
-import DbClasses.{Article, DbConnectionFactory, NewsWord, SourceDate, WordFrequency}
+import persistence.DbClasses.{Article, DbConnectionFactory, NewsWord, SourceDate, WordFrequency}
 import com.typesafe.scalalogging.Logger
+
 import java.security.MessageDigest
 import java.sql.SQLException
 
@@ -12,6 +13,7 @@ case class ArticleDao(dbConnectionFactory: DbConnectionFactory) {
   private val sourceDateDao = SourceDateDao(dbConnectionFactory)
   private val newsWordDao = NewsWordDao(dbConnectionFactory)
   private val wordFrequencyDao = WordFrequencyDao(dbConnectionFactory)
+  private val preAggregateArticleDao = PreAggregateArticleDao(dbConnectionFactory)
 
 
   def save(article: Article): Unit = {
@@ -41,9 +43,15 @@ case class ArticleDao(dbConnectionFactory: DbConnectionFactory) {
     }
   }
 
+
+  def preAggregateSources(): Unit = {
+    preAggregateArticleDao.preAggregateSources()
+  }
+
   def closePrepared(): Unit = {
     sourceDateDao.closePrepared()
     newsWordDao.closePrepared()
     wordFrequencyDao.closePrepared()
+    preAggregateArticleDao.closePrepared()
   }
 }

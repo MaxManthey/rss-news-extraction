@@ -1,6 +1,6 @@
-package DAO
+package persistence.DAO
 
-import DbClasses.{DbConnectionFactory, SourceDate}
+import persistence.DbClasses.{DbConnectionFactory, SourceDate}
 import org.scalatest.{BeforeAndAfter, PrivateMethodTester}
 import org.scalatest.funsuite.AnyFunSuite
 import java.sql.Connection
