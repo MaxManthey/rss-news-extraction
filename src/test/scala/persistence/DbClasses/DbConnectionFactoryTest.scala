@@ -1,4 +1,4 @@
-package DbClasses
+package persistence.DbClasses
 
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funsuite.AnyFunSuite

@@ -1,6 +1,6 @@
-package DAO
+package persistence.DAO
 
-import DbClasses.{DbConnectionFactory, WordFrequency}
+import persistence.DbClasses.{DbConnectionFactory, WordFrequency}
 import com.typesafe.scalalogging.Logger
 
 import java.sql.{Connection, Date, SQLException}
@@ -58,5 +58,6 @@ case class WordFrequencyDao(dbConnectionFactory: DbConnectionFactory) {
 
   def closePrepared(): Unit = {
     preparedSave.close()
+    preparedFindId.close()
   }
 }

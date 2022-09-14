@@ -1,6 +1,6 @@
-package DAO
+package persistence.DAO
 
-import DbClasses.{Article, DbConnectionFactory, NewsWord, SourceDate, WordFrequency}
+import persistence.DbClasses.{Article, DbConnectionFactory, NewsWord, SourceDate, WordFrequency}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funsuite.AnyFunSuite
 import java.time.LocalDate

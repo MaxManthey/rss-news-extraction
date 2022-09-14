@@ -1,6 +1,6 @@
-package DAO
+package persistence.DAO
 
-import DbClasses.{DbConnectionFactory, SourceDate}
+import persistence.DbClasses.{DbConnectionFactory, SourceDate}
 import com.typesafe.scalalogging.Logger
 import java.sql.{Connection, Date, SQLException}
 

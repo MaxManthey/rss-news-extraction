@@ -1,7 +1,7 @@
-package Extraction
+package persistence.Extraction
 
-import DbClasses.Article
-import Extraction.JsonNewsProtocol.jsonNewsFormat
+import persistence.DbClasses.Article
+import persistence.Extraction.JsonNewsProtocol.jsonNewsFormat
 import com.typesafe.scalalogging.Logger
 import de.l3s.boilerpipe.extractors.CanolaExtractor
 import spray.json._

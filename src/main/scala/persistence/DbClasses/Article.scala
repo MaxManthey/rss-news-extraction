@@ -1,4 +1,4 @@
-package DbClasses
+package persistence.DbClasses
 
 import java.time.LocalDate
 
