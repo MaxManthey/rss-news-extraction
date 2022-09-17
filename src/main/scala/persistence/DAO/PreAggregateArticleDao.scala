@@ -35,21 +35,26 @@ case class PreAggregateArticleDao(dbConnectionFactory: DbConnectionFactory) {
 
 
   def preAggregateSources(): Unit = {
-    val distinctWords = preparedDistinctWords.executeQuery
-    while(distinctWords.next()) {
-      val id = distinctWords.getInt("id")
-      val word = distinctWords.getString("word")
+    try {
+      val distinctWords = preparedDistinctWords.executeQuery
+      while(distinctWords.next()) {
+        val id = distinctWords.getInt("id")
+        val word = distinctWords.getString("word")
 
-      preparedAggregatedWordFrequency.setString(1, word)
-      val wordFrequencyPerDay = preparedAggregatedWordFrequency.executeQuery
-      while(wordFrequencyPerDay.next()) {
-        val aggregatedWordFrequency = AggregatedWordFrequency(
-          wordFrequencyPerDay.getInt("frequency"),
-          id,
-          wordFrequencyPerDay.getDate("date")
-        )
-        aggregatedWordFrequencyDao.saveIfNotExists(aggregatedWordFrequency)
+        preparedAggregatedWordFrequency.setString(1, word)
+        val wordFrequencyPerDay = preparedAggregatedWordFrequency.executeQuery
+        while(wordFrequencyPerDay.next()) {
+          val aggregatedWordFrequency = AggregatedWordFrequency(
+            wordFrequencyPerDay.getInt("frequency"),
+            id,
+            wordFrequencyPerDay.getDate("date")
+          )
+          aggregatedWordFrequencyDao.saveIfNotExists(aggregatedWordFrequency)
+        }
       }
+    } catch {
+      case e: SQLException => logger.error(s"Error trying to add preAggregateArticle ${e.getCause}")
+      case e: Exception => logger.error(s"Error trying to add preAggregateArticle ${e.getCause}")
     }
   }
 
