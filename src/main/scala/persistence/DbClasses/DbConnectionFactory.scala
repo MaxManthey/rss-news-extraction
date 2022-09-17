@@ -51,16 +51,23 @@ case class DbConnectionFactory(pathToDb: String) {
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
       "frequency SMALLINT," +
       "news_word_id INT," +
-      "date_id INT," +
+      "date DATE," +
       "FOREIGN KEY(news_word_id) REFERENCES news_word(id)," +
-      "FOREIGN KEY(date_id) REFERENCES aggregated_date(id)," +
-      "UNIQUE KEY `aggregated_word_date` (`news_word_id`,`date_id`));"
+      "UNIQUE KEY `aggregated_word_date` (`news_word_id`,`date`));"
+    val createAggregatedWorFrequencyTable2 = "CREATE TABLE IF NOT EXISTS aggregated_word_frequency2(" +
+      "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+      "frequency SMALLINT," +
+      "news_word_id INT," +
+      "date DATE," +
+      "FOREIGN KEY(news_word_id) REFERENCES news_word(id)," +
+      "UNIQUE KEY `aggregated_word_date2` (`news_word_id`,`date`));"
     connection.createStatement().execute(
       createSourceDateTable +
       createNewsWordsTable +
       createWordFrequencyTable +
       createAggregatedDateTable +
-      createAggregatedWorFrequencyTable
+      createAggregatedWorFrequencyTable +
+      createAggregatedWorFrequencyTable2
     )
   }
 

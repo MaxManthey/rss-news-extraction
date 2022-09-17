@@ -2,7 +2,6 @@ package persistence.DAO
 
 import persistence.DbClasses.{Article, DbConnectionFactory, NewsWord, SourceDate, WordFrequency}
 import com.typesafe.scalalogging.Logger
-
 import java.security.MessageDigest
 import java.sql.SQLException
 
@@ -46,6 +45,7 @@ case class ArticleDao(dbConnectionFactory: DbConnectionFactory) {
 
   def preAggregateSources(): Unit = {
     preAggregateArticleDao.preAggregateSources()
+//    preAggregateArticleDao.preAggregateArticle()
   }
 
   def closePrepared(): Unit = {

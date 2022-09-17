@@ -2,7 +2,6 @@ package persistence.DAO
 
 import com.typesafe.scalalogging.Logger
 import persistence.DbClasses.{AggregatedWordFrequency, DbConnectionFactory}
-
 import java.sql.{Connection, SQLException}
 
 
@@ -10,10 +9,10 @@ case class AggregatedWordFrequencyDao(dbConnectionFactory: DbConnectionFactory) 
   private val logger = Logger("AggregatedWordFrequencyDao Logger")
 
   private val preparedSave = getConnection.prepareStatement(
-    "INSERT INTO aggregated_word_frequency(frequency, news_word_id, date_id) VALUES(?, ?, ?);"
+    "INSERT INTO aggregated_word_frequency(frequency, news_word_id, date) VALUES(?, ?, ?);"
   )
   private val preparedFindId = getConnection.prepareStatement(
-    "SELECT * FROM aggregated_word_frequency WHERE frequency = ? AND news_word_id = ? AND date_id = ?;"
+    "SELECT * FROM aggregated_word_frequency WHERE frequency = ? AND news_word_id = ? AND date = ?;"
   )
 
 
@@ -29,7 +28,7 @@ case class AggregatedWordFrequencyDao(dbConnectionFactory: DbConnectionFactory) 
     try {
       preparedSave.setInt(1, aggregatedWordFrequency.frequency)
       preparedSave.setInt(2, aggregatedWordFrequency.newsWordId)
-      preparedSave.setInt(3, aggregatedWordFrequency.dateId)
+      preparedSave.setDate(3, aggregatedWordFrequency.date)
       preparedSave.execute
     } catch {
       case e: SQLException =>
@@ -44,7 +43,7 @@ case class AggregatedWordFrequencyDao(dbConnectionFactory: DbConnectionFactory) 
     try {
       preparedFindId.setInt(1, aggregatedWordFrequency.frequency)
       preparedFindId.setInt(2, aggregatedWordFrequency.newsWordId)
-      preparedFindId.setInt(3, aggregatedWordFrequency.dateId)
+      preparedFindId.setDate(3, aggregatedWordFrequency.date)
       val resultSet = preparedFindId.executeQuery
       if(resultSet.next()) {
         return Some(resultSet.getInt("id"))
