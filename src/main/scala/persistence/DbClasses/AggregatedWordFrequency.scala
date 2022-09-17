@@ -1,3 +1,5 @@
 package persistence.DbClasses
 
-case class AggregatedWordFrequency(frequency: Int, newsWordId: Int, dateId: Int)
+import java.sql.Date
+
+case class AggregatedWordFrequency(frequency: Int, newsWordId: Int, date: Date)
