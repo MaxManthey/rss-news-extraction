@@ -44,8 +44,7 @@ case class ArticleDao(dbConnectionFactory: DbConnectionFactory) {
 
 
   def preAggregateSources(): Unit = {
-    preAggregateArticleDao.preAggregateSources()
-//    preAggregateArticleDao.preAggregateArticle()
+    preAggregateArticleDao.preAggregateArticle()
   }
 
   def closePrepared(): Unit = {
