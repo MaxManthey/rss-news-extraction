@@ -22,7 +22,12 @@ object RssNewsPersistence {
       article: Article => articleDao.save(article)
     }
 
+    val timer = System.nanoTime
+
     articleDao.preAggregateSources()
+
+    val duration = (System.nanoTime - timer) / 1e9d
+    println(duration + " Sec")
 
     articleDao.closePrepared()
     connectionFactory.close()

@@ -1,5 +1,5 @@
 ThisBuild / organization := "org.maxmanthey"
-ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / version := "0.1.1-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.13.8"
 
@@ -17,3 +17,5 @@ libraryDependencies ++= Seq(
   "de.l3s.boilerpipe" % "boilerpipe" % "1.1.0",
   "com.h2database" % "h2" % "1.4.196"
 )
+
+publishTo := Some(Resolver.file("file", new File("/Users/max/tmp")))
