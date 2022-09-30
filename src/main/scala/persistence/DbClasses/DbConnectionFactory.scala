@@ -3,8 +3,10 @@ package persistence.DbClasses
 import java.sql.{Connection, DriverManager, SQLException}
 
 
-case class DbConnectionFactory(pathToDb: String) {
-  private val connectionUrl = "jdbc:h2:" + pathToDb + "/rss_news_articles"
+case class DbConnectionFactory(connectionUrl: String) {
+//  private val connectionUrl = "jdbc:h2:/Users/max/Development/Thesis/db-rss-news/h2-db/rss_news_articles"
+//  private val connectionUrl = "jdbc:h2:mem:default"
+//  private val connectionUrl = "jdbc:h2:tcp://localhost/~/rss_news_words"
   private val username = "sa"
   private val password = ""
 
@@ -21,8 +23,7 @@ case class DbConnectionFactory(pathToDb: String) {
     val dropTablesQuery = "DROP TABLE IF EXISTS word_frequency;" +
     "DROP TABLE IF EXISTS news_word;" +
     "DROP TABLE IF EXISTS source_date;" +
-    "DROP TABLE IF EXISTS aggregated_word_frequency;" +
-    "DROP TABLE IF EXISTS aggregated_date;"
+    "DROP TABLE IF EXISTS aggregated_word_frequency;"
     connection.createStatement().execute(dropTablesQuery)
   }
 
@@ -44,9 +45,6 @@ case class DbConnectionFactory(pathToDb: String) {
       "FOREIGN KEY(news_word_id) REFERENCES news_word(id)," +
       "FOREIGN KEY(source_date_id) REFERENCES source_date(id)," +
       "UNIQUE KEY `word_source_date` (`news_word_id`,`source_date_id`));"
-    val createAggregatedDateTable = "CREATE TABLE IF NOT EXISTS aggregated_date(" +
-      "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-      "date DATE UNIQUE);"
     val createAggregatedWorFrequencyTable = "CREATE TABLE IF NOT EXISTS aggregated_word_frequency(" +
       "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
       "frequency SMALLINT," +
@@ -58,7 +56,6 @@ case class DbConnectionFactory(pathToDb: String) {
       createSourceDateTable +
       createNewsWordsTable +
       createWordFrequencyTable +
-      createAggregatedDateTable +
       createAggregatedWorFrequencyTable
     )
   }
